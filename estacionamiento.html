@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seleccionar Partido - Buenos Aires</title>
+    <!-- Leaflet CSS para el mapa -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin=""/>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .form-container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .form-group select {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: white;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .form-group select:focus {
+            outline: none;
+            box-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+
+        .map-container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+
+        #map {
+            height: 500px;
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        .info-panel {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .info-panel.active {
+            display: block;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: background 0.3s;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .header p {
+                font-size: 0.9rem;
+            }
+
+            .container {
+                max-width: 100%;
+            }
+
+            .form-container {
+                padding: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .form-group label {
+                font-size: 1rem;
+            }
+
+            .form-group select {
+                padding: 0.8rem;
+                font-size: 0.9rem;
+            }
+
+            .map-container {
+                padding: 0.5rem;
+            }
+
+            #map {
+                height: 350px;
+            }
+
+            .info-panel {
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
+
+            .info-panel h3 {
+                font-size: 1.2rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .info-panel p {
+                font-size: 0.9rem;
+                line-height: 1.4;
+            }
+
+            .back-button {
+                top: 1rem;
+                left: 1rem;
+                padding: 0.6rem 1.2rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            body {
+                padding: 0.5rem;
+            }
+
+            .header {
+                margin-bottom: 2rem;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .header p {
+                font-size: 0.85rem;
+                padding: 0 1rem;
+            }
+
+            .form-container {
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
+
+            .form-group select {
+                padding: 0.7rem;
+                font-size: 0.85rem;
+            }
+
+            .map-container {
+                padding: 0.3rem;
+            }
+
+            #map {
+                height: 300px;
+                border-radius: 8px;
+            }
+
+            .info-panel {
+                padding: 0.8rem;
+            }
+
+            .info-panel h3 {
+                font-size: 1.1rem;
+            }
+
+            .info-panel p {
+                font-size: 0.85rem;
+                line-height: 1.3;
+            }
+
+            .back-button {
+                top: 0.5rem;
+                left: 0.5rem;
+                padding: 0.5rem 1rem;
+                font-size: 0.8rem;
+                border-radius: 20px;
+            }
+        }
+
+        @media screen and (min-width: 1200px) {
+            .container {
+                max-width: 1400px;
+            }
+
+            #map {
+                height: 600px;
+            }
+
+            .header h1 {
+                font-size: 3rem;
+            }
+
+            .form-container {
+                padding: 2.5rem;
+            }
+
+            .form-group select {
+                padding: 1.2rem;
+                font-size: 1.1rem;
+            }
+        }
+
+        /* Mejoras adicionales para touch devices */
+        @media (hover: none) and (pointer: coarse) {
+            .form-group select {
+                min-height: 44px;
+            }
+
+            .back-button {
+                min-height: 44px;
+                min-width: 44px;
+            }
+        }
+
+        /* Orientación landscape en móviles */
+        @media screen and (max-width: 768px) and (orientation: landscape) {
+            #map {
+                height: 250px;
+            }
+
+            .header {
+                margin-bottom: 1.5rem;
+            }
+
+            .header h1 {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-button">← Volver al Inicio</a>
+
+    <div class="container">
+        <div class="header">
+            <h1>Seleccionar Partido</h1>
+            <p>Elige un partido de la Provincia de Buenos Aires para ver su distrito</p>
+        </div>
+
+        <div class="form-container">
+            <div class="form-group">
+                <label for="partido-select">Partido:</label>
+                <select id="partido-select">
+                    <option value="">Selecciona un partido...</option>
+                    <option value="almirante_brown">Almirante Brown</option>
+                    <option value="avellaneda">Avellaneda</option>
+                    <option value="bahia_blanca">Bahía Blanca</option>
+                    <option value="berazategui">Berazategui</option>
+                    <option value="berisso">Berisso</option>
+                    <option value="canuelas">Cañuelas</option>
+                    <option value="esteban_echeverria">Esteban Echeverría</option>
+                    <option value="ezeiza">Ezeiza</option>
+                    <option value="florencio_varela">Florencio Varela</option>
+                    <option value="general_san_martin">General San Martín</option>
+                    <option value="hurlingham">Hurlingham</option>
+                    <option value="ituzaingo">Ituzaingó</option>
+                    <option value="jose_c_paz">José C. Paz</option>
+                    <option value="la_matanza">La Matanza</option>
+                    <option value="la_plata">La Plata</option>
+                    <option value="lanus">Lanús</option>
+                    <option value="lomas_de_zamora">Lomas de Zamora</option>
+                    <option value="lujan">Luján</option>
+                    <option value="malvinas_argentinas">Malvinas Argentinas</option>
+                    <option value="mar_del_plata">Mar del Plata</option>
+                    <option value="marcos_paz">Marcos Paz</option>
+                    <option value="merlo">Merlo</option>
+                    <option value="moreno">Moreno</option>
+                    <option value="moron">Morón</option>
+                    <option value="pilar">Pilar</option>
+                    <option value="quilmes">Quilmes</option>
+                    <option value="san_fernando">San Fernando</option>
+                    <option value="san_isidro">San Isidro</option>
+                    <option value="san_miguel">San Miguel</option>
+                    <option value="tigre">Tigre</option>
+                    <option value="tres_de_febrero">Tres de Febrero</option>
+                    <option value="vicente_lopez">Vicente López</option>
+                    <option value="villa_gesell">Villa Gesell</option>
+                    <option value="zarate">Zárate</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="info-panel" id="info-panel">
+            <h3 id="partido-name"></h3>
+            <p id="partido-info"></p>
+        </div>
+
+        <div class="map-container">
+            <div id="map"></div>
+        </div>
+    </div>
+
+    <!-- Leaflet JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""></script>
+
+    <script>
+        // Inicializar el mapa
+        let map = L.map('map').setView([-34.6118, -58.3960], 10);
+
+        // Agregar capa base del mapa
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Variable para almacenar la capa del distrito actual
+        let currentDistrictLayer = null;
+        let currentMarkers = [];
+
+        // Datos de coordenadas más precisas de los distritos
+        const partidosData = {
+            malvinas_argentinas: {
+                name: "Malvinas Argentinas",
+                info: "Partido del Gran Buenos Aires Norte, incluye localidades como Grand Bourg, Los Polvorines, Pablo Nogués, Villa de Mayo.",
+                coordinates: [
+                    [-34.441, -58.691],
+                    [-34.445, -58.672],
+                    [-34.460, -58.651],
+                    [-34.475, -58.640],
+                    [-34.490, -58.635],
+                    [-34.505, -58.640],
+                    [-34.520, -58.655],
+                    [-34.525, -58.675],
+                    [-34.518, -58.695],
+                    [-34.505, -58.710],
+                    [-34.485, -58.720],
+                    [-34.465, -58.715],
+                    [-34.450, -58.705],
+                    [-34.441, -58.691]
+                ],
+                markers: [
+                    { lat: -34.470, lng: -58.670, name: "Grand Bourg Centro", type: "Estacionamiento Público" },
+                    { lat: -34.485, lng: -58.680, name: "Los Polvorines Plaza", type: "Zona Comercial" },
+                    { lat: -34.495, lng: -58.665, name: "Pablo Nogués Shopping", type: "Centro Comercial" },
+                    { lat: -34.480, lng: -58.655, name: "Villa de Mayo Terminal", type: "Terminal de Transporte" }
+                ]
+            },
+            pilar: {
+                name: "Pilar",
+                info: "Partido del noroeste del Gran Buenos Aires, conocido por sus countries y barrios cerrados.",
+                coordinates: [
+                    [-34.410, -58.915],
+                    [-34.420, -58.890],
+                    [-34.435, -58.870],
+                    [-34.455, -58.855],
+                    [-34.480, -58.850],
+                    [-34.505, -58.860],
+                    [-34.525, -58.880],
+                    [-34.540, -58.905],
+                    [-34.545, -58.930],
+                    [-34.535, -58.955],
+                    [-34.515, -58.970],
+                    [-34.490, -58.975],
+                    [-34.465, -58.970],
+                    [-34.440, -58.955],
+                    [-34.420, -58.935],
+                    [-34.410, -58.915]
+                ],
+                markers: [
+                    { lat: -34.458, lng: -58.915, name: "Pilar Centro", type: "Centro Urbano" },
+                    { lat: -34.480, lng: -58.890, name: "Pilar Plaza Shopping", type: "Centro Comercial" },
+                    { lat: -34.465, lng: -58.940, name: "Country Club Pilar", type: "Club de Campo" },
+                    { lat: -34.495, lng: -58.920, name: "Nordelta", type: "Barrio Privado" }
+                ]
+            },
+            vicente_lopez: {
+                name: "Vicente López",
+                info: "Partido del norte del Gran Buenos Aires, incluye Olivos, La Lucila, Vicente López, Munro, Villa Martelli.",
+                coordinates: [
+                    [-34.510, -58.515],
+                    [-34.515, -58.495],
+                    [-34.525, -58.475],
+                    [-34.540, -58.460],
+                    [-34.555, -58.455],
+                    [-34.570, -58.460],
+                    [-34.580, -58.475],
+                    [-34.585, -58.495],
+                    [-34.580, -58.515],
+                    [-34.570, -58.530],
+                    [-34.555, -58.535],
+                    [-34.540, -58.530],
+                    [-34.525, -58.525],
+                    [-34.510, -58.515]
+                ],
+                markers: [
+                    { lat: -34.535, lng: -58.495, name: "Olivos Plaza", type: "Centro Comercial" },
+                    { lat: -34.545, lng: -58.485, name: "La Lucila Shopping", type: "Centro Comercial" },
+                    { lat: -34.555, lng: -58.505, name: "Vicente López Centro", type: "Centro Urbano" },
+                    { lat: -34.565, lng: -58.520, name: "Munro Terminal", type: "Terminal de Transporte" },
+                    { lat: -34.570, lng: -58.490, name: "Villa Martelli Plaza", type: "Plaza Principal" }
+                ]
+            },
+            la_matanza: {
+                name: "La Matanza",
+                info: "El partido más poblado de Argentina, incluye San Justo, Ramos Mejía, Isidro Casanova, Ciudad Evita.",
+                coordinates: [
+                    [-34.640, -58.680],
+                    [-34.650, -58.620],
+                    [-34.665, -58.570],
+                    [-34.680, -58.520],
+                    [-34.700, -58.480],
+                    [-34.720, -58.450],
+                    [-34.740, -58.440],
+                    [-34.760, -58.450],
+                    [-34.775, -58.470],
+                    [-34.785, -58.500],
+                    [-34.790, -58.530],
+                    [-34.785, -58.560],
+                    [-34.775, -58.590],
+                    [-34.760, -58.620],
+                    [-34.740, -58.650],
+                    [-34.720, -58.675],
+                    [-34.700, -58.690],
+                    [-34.680, -58.695],
+                    [-34.660, -58.690],
+                    [-34.640, -58.680]
+                ],
+                markers: [
+                    { lat: -34.720, lng: -58.565, name: "San Justo Centro", type: "Centro Urbano" },
+                    { lat: -34.675, lng: -58.520, name: "Ramos Mejía Plaza", type: "Centro Comercial" },
+                    { lat: -34.710, lng: -58.480, name: "Isidro Casanova Terminal", type: "Terminal de Transporte" },
+                    { lat: -34.730, lng: -58.630, name: "Ciudad Evita", type: "Barrio Histórico" },
+                    { lat: -34.690, lng: -58.590, name: "La Matanza Shopping", type: "Centro Comercial" }
+                ]
+            },
+            avellaneda: {
+                name: "Avellaneda",
+                info: "Partido del sur del Gran Buenos Aires, incluye Avellaneda, Dock Sud, Wilde, Villa Domínico.",
+                coordinates: [
+                    [-34.648, -58.385],
+                    [-34.655, -58.365],
+                    [-34.665, -58.345],
+                    [-34.680, -58.330],
+                    [-34.695, -58.325],
+                    [-34.710, -58.330],
+                    [-34.720, -58.345],
+                    [-34.725, -58.365],
+                    [-34.720, -58.385],
+                    [-34.710, -58.400],
+                    [-34.695, -58.405],
+                    [-34.680, -58.400],
+                    [-34.665, -58.395],
+                    [-34.648, -58.385]
+                ],
+                markers: [
+                    { lat: -34.665, lng: -58.365, name: "Avellaneda Centro", type: "Centro Urbano" },
+                    { lat: -34.680, lng: -58.350, name: "Dock Sud Puerto", type: "Puerto Industrial" },
+                    { lat: -34.695, lng: -58.375, name: "Wilde Plaza", type: "Plaza Principal" },
+                    { lat: -34.710, lng: -58.390, name: "Villa Domínico Terminal", type: "Terminal de Transporte" }
+                ]
+            },
+            quilmes: {
+                name: "Quilmes",
+                info: "Partido del sur del Gran Buenos Aires, incluye Quilmes, Bernal, Ezpeleta, San Francisco Solano.",
+                coordinates: [
+                    [-34.700, -58.290],
+                    [-34.710, -58.260],
+                    [-34.725, -58.235],
+                    [-34.745, -58.220],
+                    [-34.765, -58.215],
+                    [-34.785, -58.220],
+                    [-34.800, -58.235],
+                    [-34.810, -58.255],
+                    [-34.815, -58.275],
+                    [-34.810, -58.295],
+                    [-34.800, -58.310],
+                    [-34.785, -58.320],
+                    [-34.765, -58.325],
+                    [-34.745, -58.320],
+                    [-34.725, -58.310],
+                    [-34.710, -58.300],
+                    [-34.700, -58.290]
+                ],
+                markers: [
+                    { lat: -34.720, lng: -58.265, name: "Quilmes Centro", type: "Centro Urbano" },
+                    { lat: -34.740, lng: -58.245, name: "Bernal Plaza", type: "Centro Comercial" },
+                    { lat: -34.765, lng: -58.230, name: "Ezpeleta Terminal", type: "Terminal de Transporte" },
+                    { lat: -34.785, lng: -58.270, name: "San Francisco Solano", type: "Barrio Residencial" },
+                    { lat: -34.730, lng: -58.280, name: "Quilmes Shopping", type: "Centro Comercial" }
+                ]
+            },
+            san_isidro: {
+                name: "San Isidro",
+                info: "Partido del norte del Gran Buenos Aires, incluye San Isidro, Acassuso, Martínez, Boulogne Sur Mer.",
+                coordinates: [
+                    [-34.458, -58.530],
+                    [-34.465, -58.510],
+                    [-34.475, -58.490],
+                    [-34.490, -58.475],
+                    [-34.505, -58.470],
+                    [-34.520, -58.475],
+                    [-34.530, -58.490],
+                    [-34.535, -58.510],
+                    [-34.530, -58.530],
+                    [-34.520, -58.545],
+                    [-34.505, -58.550],
+                    [-34.490, -58.545],
+                    [-34.475, -58.540],
+                    [-34.458, -58.530]
+                ],
+                markers: [
+                    { lat: -34.470, lng: -58.515, name: "San Isidro Centro", type: "Centro Urbano" },
+                    { lat: -34.485, lng: -58.500, name: "Acassuso Plaza", type: "Plaza Principal" },
+                    { lat: -34.500, lng: -58.520, name: "Martínez Terminal", type: "Terminal de Transporte" },
+                    { lat: -34.515, lng: -58.510, name: "Boulogne Sur Mer", type: "Barrio Residencial" }
+                ]
+            },
+            tigre: {
+                name: "Tigre",
+                info: "Partido del norte del Gran Buenos Aires, famoso por el Delta del Paraná y Puerto de Frutos.",
+                coordinates: [
+                    [-34.350, -58.615],
+                    [-34.360, -58.590],
+                    [-34.375, -58.570],
+                    [-34.395, -58.555],
+                    [-34.415, -58.550],
+                    [-34.435, -58.555],
+                    [-34.450, -58.570],
+                    [-34.460, -58.590],
+                    [-34.465, -58.615],
+                    [-34.460, -58.640],
+                    [-34.450, -58.660],
+                    [-34.435, -58.675],
+                    [-34.415, -58.680],
+                    [-34.395, -58.675],
+                    [-34.375, -58.660],
+                    [-34.360, -58.640],
+                    [-34.350, -58.615]
+                ]
+            },
+            la_plata: {
+                name: "La Plata",
+                info: "Capital de la Provincia de Buenos Aires, ciudad planificada fundada en 1882.",
+                coordinates: [
+                    [-34.885, -58.035],
+                    [-34.895, -57.995],
+                    [-34.910, -57.965],
+                    [-34.930, -57.945],
+                    [-34.955, -57.935],
+                    [-34.980, -57.940],
+                    [-35.000, -57.955],
+                    [-35.015, -57.975],
+                    [-35.025, -58.000],
+                    [-35.020, -58.025],
+                    [-35.010, -58.045],
+                    [-34.995, -58.060],
+                    [-34.975, -58.070],
+                    [-34.950, -58.065],
+                    [-34.925, -58.055],
+                    [-34.905, -58.045],
+                    [-34.885, -58.035]
+                ]
+            },
+            almirante_brown: {
+                name: "Almirante Brown",
+                info: "Partido del sur del Gran Buenos Aires, incluye Adrogué, Burzaco, Claypole, Glew, Longchamps, Malvinas Argentinas, Rafael Calzada.",
+                coordinates: [
+                    [-34.790, -58.420],
+                    [-34.800, -58.390],
+                    [-34.815, -58.365],
+                    [-34.835, -58.350],
+                    [-34.855, -58.345],
+                    [-34.875, -58.350],
+                    [-34.890, -58.365],
+                    [-34.900, -58.385],
+                    [-34.905, -58.410],
+                    [-34.900, -58.435],
+                    [-34.890, -58.455],
+                    [-34.875, -58.470],
+                    [-34.855, -58.475],
+                    [-34.835, -58.470],
+                    [-34.815, -58.455],
+                    [-34.800, -58.440],
+                    [-34.790, -58.420]
+                ]
+            },
+            berazategui: {
+                name: "Berazategui",
+                info: "Partido del sur del Gran Buenos Aires, incluye Berazategui, Ranelagh, Sourigues, Villa España.",
+                coordinates: [
+                    [-34.740, -58.245],
+                    [-34.750, -58.215],
+                    [-34.765, -58.190],
+                    [-34.785, -58.175],
+                    [-34.805, -58.170],
+                    [-34.825, -58.175],
+                    [-34.840, -58.190],
+                    [-34.850, -58.210],
+                    [-34.855, -58.235],
+                    [-34.850, -58.260],
+                    [-34.840, -58.280],
+                    [-34.825, -58.295],
+                    [-34.805, -58.300],
+                    [-34.785, -58.295],
+                    [-34.765, -58.280],
+                    [-34.750, -58.265],
+                    [-34.740, -58.245]
+                ]
+            },
+            lanus: {
+                name: "Lanús",
+                info: "Partido del sur del Gran Buenos Aires, incluye Lanús Este, Lanús Oeste, Remedios de Escalada, Monte Chingolo.",
+                coordinates: [
+                    [-34.685, -58.405],
+                    [-34.695, -58.375],
+                    [-34.710, -58.350],
+                    [-34.730, -58.335],
+                    [-34.750, -58.330],
+                    [-34.770, -58.335],
+                    [-34.785, -58.350],
+                    [-34.795, -58.370],
+                    [-34.800, -58.395],
+                    [-34.795, -58.420],
+                    [-34.785, -58.440],
+                    [-34.770, -58.455],
+                    [-34.750, -58.460],
+                    [-34.730, -58.455],
+                    [-34.710, -58.440],
+                    [-34.695, -58.425],
+                    [-34.685, -58.405]
+                ]
+            },
+            lomas_de_zamora: {
+                name: "Lomas de Zamora",
+                info: "Partido del sur del Gran Buenos Aires, incluye Lomas de Zamora, Banfield, Temperley, Turdera.",
+                coordinates: [
+                    [-34.745, -58.435],
+                    [-34.755, -58.405],
+                    [-34.770, -58.380],
+                    [-34.790, -58.365],
+                    [-34.810, -58.360],
+                    [-34.830, -58.365],
+                    [-34.845, -58.380],
+                    [-34.855, -58.400],
+                    [-34.860, -58.425],
+                    [-34.855, -58.450],
+                    [-34.845, -58.470],
+                    [-34.830, -58.485],
+                    [-34.810, -58.490],
+                    [-34.790, -58.485],
+                    [-34.770, -58.470],
+                    [-34.755, -58.455],
+                    [-34.745, -58.435]
+                ]
+            },
+            florencio_varela: {
+                name: "Florencio Varela",
+                info: "Partido del sur del Gran Buenos Aires, incluye Florencio Varela, Bosques, Villa San Luis.",
+                coordinates: [
+                    [-34.780, -58.295],
+                    [-34.790, -58.265],
+                    [-34.805, -58.240],
+                    [-34.825, -58.225],
+                    [-34.845, -58.220],
+                    [-34.865, -58.225],
+                    [-34.880, -58.240],
+                    [-34.890, -58.260],
+                    [-34.895, -58.285],
+                    [-34.890, -58.310],
+                    [-34.880, -58.330],
+                    [-34.865, -58.345],
+                    [-34.845, -58.350],
+                    [-34.825, -58.345],
+                    [-34.805, -58.330],
+                    [-34.790, -58.315],
+                    [-34.780, -58.295]
+                ]
+            },
+            ezeiza: {
+                name: "Ezeiza",
+                info: "Partido del sur del Gran Buenos Aires, incluye Ezeiza, Tristán Suárez, Carlos Spegazzini.",
+                coordinates: [
+                    [-34.820, -58.565],
+                    [-34.830, -58.535],
+                    [-34.845, -58.510],
+                    [-34.865, -58.495],
+                    [-34.885, -58.490],
+                    [-34.905, -58.495],
+                    [-34.920, -58.510],
+                    [-34.930, -58.530],
+                    [-34.935, -58.555],
+                    [-34.930, -58.580],
+                    [-34.920, -58.600],
+                    [-34.905, -58.615],
+                    [-34.885, -58.620],
+                    [-34.865, -58.615],
+                    [-34.845, -58.600],
+                    [-34.830, -58.585],
+                    [-34.820, -58.565]
+                ]
+            },
+            merlo: {
+                name: "Merlo",
+                info: "Partido del oeste del Gran Buenos Aires, incluye Merlo, Libertad, Mariano Acosta, Pontevedra.",
+                coordinates: [
+                    [-34.640, -58.745],
+                    [-34.650, -58.715],
+                    [-34.665, -58.690],
+                    [-34.685, -58.675],
+                    [-34.705, -58.670],
+                    [-34.725, -58.675],
+                    [-34.740, -58.690],
+                    [-34.750, -58.710],
+                    [-34.755, -58.735],
+                    [-34.750, -58.760],
+                    [-34.740, -58.780],
+                    [-34.725, -58.795],
+                    [-34.705, -58.800],
+                    [-34.685, -58.795],
+                    [-34.665, -58.780],
+                    [-34.650, -58.765],
+                    [-34.640, -58.745]
+                ]
+            },
+            moreno: {
+                name: "Moreno",
+                info: "Partido del oeste del Gran Buenos Aires, incluye Moreno, Francisco Álvarez, La Reja, Trujui.",
+                coordinates: [
+                    [-34.615, -58.805],
+                    [-34.625, -58.775],
+                    [-34.640, -58.750],
+                    [-34.660, -58.735],
+                    [-34.680, -58.730],
+                    [-34.700, -58.735],
+                    [-34.715, -58.750],
+                    [-34.725, -58.770],
+                    [-34.730, -58.795],
+                    [-34.725, -58.820],
+                    [-34.715, -58.840],
+                    [-34.700, -58.855],
+                    [-34.680, -58.860],
+                    [-34.660, -58.855],
+                    [-34.640, -58.840],
+                    [-34.625, -58.825],
+                    [-34.615, -58.805]
+                ]
+            },
+            moron: {
+                name: "Morón",
+                info: "Partido del oeste del Gran Buenos Aires, incluye Morón, Castelar, El Palomar, Haedo.",
+                coordinates: [
+                    [-34.635, -58.635],
+                    [-34.645, -58.605],
+                    [-34.660, -58.580],
+                    [-34.680, -58.565],
+                    [-34.700, -58.560],
+                    [-34.720, -58.565],
+                    [-34.735, -58.580],
+                    [-34.745, -58.600],
+                    [-34.750, -58.625],
+                    [-34.745, -58.650],
+                    [-34.735, -58.670],
+                    [-34.720, -58.685],
+                    [-34.700, -58.690],
+                    [-34.680, -58.685],
+                    [-34.660, -58.670],
+                    [-34.645, -58.655],
+                    [-34.635, -58.635]
+                ]
+            },
+            tres_de_febrero: {
+                name: "Tres de Febrero",
+                info: "Partido del noroeste del Gran Buenos Aires, incluye Caseros, El Libertador, Villa Bosch, Ciudadela.",
+                coordinates: [
+                    [-34.585, -58.575],
+                    [-34.595, -58.545],
+                    [-34.610, -58.520],
+                    [-34.630, -58.505],
+                    [-34.650, -58.500],
+                    [-34.670, -58.505],
+                    [-34.685, -58.520],
+                    [-34.695, -58.540],
+                    [-34.700, -58.565],
+                    [-34.695, -58.590],
+                    [-34.685, -58.610],
+                    [-34.670, -58.625],
+                    [-34.650, -58.630],
+                    [-34.630, -58.625],
+                    [-34.610, -58.610],
+                    [-34.595, -58.595],
+                    [-34.585, -58.575]
+                ]
+            },
+            general_san_martin: {
+                name: "General San Martín",
+                info: "Partido del norte del Gran Buenos Aires, incluye San Martín, Villa Ballester, Villa Lynch.",
+                coordinates: [
+                    [-34.570, -58.545],
+                    [-34.580, -58.515],
+                    [-34.595, -58.490],
+                    [-34.615, -58.475],
+                    [-34.635, -58.470],
+                    [-34.655, -58.475],
+                    [-34.670, -58.490],
+                    [-34.680, -58.510],
+                    [-34.685, -58.535],
+                    [-34.680, -58.560],
+                    [-34.670, -58.580],
+                    [-34.655, -58.595],
+                    [-34.635, -58.600],
+                    [-34.615, -58.595],
+                    [-34.595, -58.580],
+                    [-34.580, -58.565],
+                    [-34.570, -58.545]
+                ]
+            }
+        };
+
+        // Función para mostrar el distrito en el mapa
+        function showDistrict(partidoKey) {
+            // Remover capa anterior si existe
+            if (currentDistrictLayer) {
+                map.removeLayer(currentDistrictLayer);
+            }
+            
+            // Remover marcadores anteriores
+            currentMarkers.forEach(marker => {
+                map.removeLayer(marker);
+            });
+            currentMarkers = [];
+
+            const partido = partidosData[partidoKey];
+            if (!partido) {
+                console.log('Datos del partido no encontrados');
+                return;
+            }
+
+            // Crear polígono con borde rojo más visible
+            currentDistrictLayer = L.polygon(partido.coordinates, {
+                color: '#ff0000',
+                weight: 4,
+                opacity: 1,
+                fillColor: '#ff0000',
+                fillOpacity: 0.15,
+                dashArray: '5, 5'
+            }).addTo(map);
+
+            // Agregar marcadores si existen
+            if (partido.markers) {
+                partido.markers.forEach(markerData => {
+                    const marker = L.marker([markerData.lat, markerData.lng], {
+                        icon: L.icon({
+                            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
+                            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                            iconSize: [25, 41],
+                            iconAnchor: [12, 41],
+                            popupAnchor: [1, -34],
+                            shadowSize: [41, 41]
+                        })
+                    }).addTo(map);
+                    
+                    marker.bindPopup(`
+                        <div style="font-family: Arial, sans-serif; min-width: 200px; max-width: 300px;">
+                            <h4 style="margin: 0 0 8px 0; color: #333; font-size: 14px; line-height: 1.2;">${markerData.name}</h4>
+                            <p style="margin: 0; color: #666; font-size: 12px; line-height: 1.3;">${markerData.type}</p>
+                        </div>
+                    `);
+                    
+                    currentMarkers.push(marker);
+                });
+            }
+
+            // Ajustar vista del mapa al distrito
+            map.fitBounds(currentDistrictLayer.getBounds());
+
+            // Mostrar información del partido
+            document.getElementById('partido-name').textContent = partido.name;
+            document.getElementById('partido-info').textContent = partido.info;
+            document.getElementById('info-panel').classList.add('active');
+
+            // Agregar popup al hacer clic en el polígono
+            currentDistrictLayer.bindPopup(`
+                <div style="font-family: Arial, sans-serif; min-width: 250px; max-width: 350px;">
+                    <b style="font-size: 16px; color: #333; display: block; margin-bottom: 8px;">${partido.name}</b>
+                    <p style="margin: 0; color: #666; font-size: 13px; line-height: 1.4;">${partido.info}</p>
+                </div>
+            `);
+        }
+
+        // Event listener para el select
+        document.getElementById('partido-select').addEventListener('change', function() {
+            const selectedPartido = this.value;
+            if (selectedPartido) {
+                showDistrict(selectedPartido);
+            } else {
+                // Si no hay selección, ocultar info y remover capas
+                if (currentDistrictLayer) {
+                    map.removeLayer(currentDistrictLayer);
+                    currentDistrictLayer = null;
+                }
+                
+                // Remover marcadores
+                currentMarkers.forEach(marker => {
+                    map.removeLayer(marker);
+                });
+                currentMarkers = [];
+                
+                document.getElementById('info-panel').classList.remove('active');
+                map.setView([-34.6118, -58.3960], 10);
+            }
+        });
+    </script>
+</body>
+</html>

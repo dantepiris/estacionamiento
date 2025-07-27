@@ -20,6 +20,13 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             color: white;
+            /* Optimizaciones para móviles */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+            /* Prevenir zoom accidental en inputs */
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
         }
 
         .container {
@@ -81,6 +88,8 @@
             height: 100%;
             border-radius: 15px;
             z-index: 1;
+            /* Mejorar la experiencia táctil en móviles */
+            touch-action: pan-x pan-y;
         }
 
         .map-loading {
@@ -131,6 +140,18 @@
             color: #333;
             z-index: 1000;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .loading-text {
+            font-size: 1rem;
+            margin-top: 1rem;
+            opacity: 0.7;
+        }
+
+        .cta-description {
+            margin: 1rem 0;
+            opacity: 0.9;
         }
 
         .map-controls {
@@ -254,6 +275,283 @@
                 left: 0;
                 margin-bottom: 2rem;
                 display: inline-block;
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .header {
+                margin-bottom: 2rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            .map-container {
+                padding: 1rem;
+                margin-bottom: 2rem;
+            }
+
+            .map-placeholder {
+                height: 400px;
+            }
+
+            .location-info {
+                top: 5px;
+                right: 5px;
+                padding: 0.3rem 0.6rem;
+                font-size: 0.8rem;
+            }
+
+            .map-controls {
+                bottom: 5px;
+                left: 5px;
+            }
+
+            .control-button {
+                padding: 0.4rem;
+                margin: 0.1rem;
+                font-size: 0.9rem;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+                margin-top: 2rem;
+            }
+
+            .feature-card {
+                padding: 1.5rem;
+            }
+
+            .feature-card h3 {
+                font-size: 1.3rem;
+            }
+
+            .cta-section {
+                padding: 2rem 1rem;
+                margin-top: 2rem;
+            }
+
+            .cta-section h2 {
+                font-size: 1.5rem;
+            }
+
+            .cta-button {
+                padding: 0.8rem 2rem;
+                font-size: 1rem;
+            }
+
+            /* Mejorar popups en móvil */
+            .leaflet-popup-content {
+                margin: 8px 12px;
+                font-size: 0.9rem;
+            }
+
+            .leaflet-popup-content h3 {
+                font-size: 1.1rem !important;
+            }
+        }
+
+        /* Estilos para tablet */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .container {
+                padding: 1.5rem;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .subtitle {
+                font-size: 1.1rem;
+            }
+
+            .back-button {
+                padding: 0.7rem 1.3rem;
+            }
+
+            .map-placeholder {
+                height: 450px;
+            }
+
+            .features {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.5rem;
+            }
+
+            .feature-card {
+                padding: 1.8rem;
+            }
+
+            .cta-section {
+                padding: 2.5rem;
+            }
+        }
+
+        /* Estilos para móviles pequeños */
+        @media (max-width: 480px) {
+            .container {
+                padding: 0.8rem;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .subtitle {
+                font-size: 0.95rem;
+            }
+
+            .back-button {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.85rem;
+                border-radius: 20px;
+            }
+
+            .map-container {
+                padding: 0.8rem;
+                border-radius: 15px;
+            }
+
+            .map-placeholder {
+                height: 350px;
+                border-radius: 10px;
+            }
+
+            .map-loading {
+                font-size: 1rem;
+            }
+
+            .loading-spinner {
+                width: 30px;
+                height: 30px;
+            }
+
+            .location-info {
+                top: 3px;
+                right: 3px;
+                padding: 0.25rem 0.5rem;
+                font-size: 0.75rem;
+                border-radius: 8px;
+            }
+
+            .map-controls {
+                bottom: 3px;
+                left: 3px;
+            }
+
+            .control-button {
+                padding: 0.3rem;
+                font-size: 0.8rem;
+                border-radius: 3px;
+            }
+
+            .feature-card {
+                padding: 1.2rem;
+                border-radius: 12px;
+            }
+
+            .feature-card h3 {
+                font-size: 1.2rem;
+                margin-bottom: 0.8rem;
+            }
+
+            .feature-card p {
+                font-size: 0.9rem;
+                line-height: 1.5;
+            }
+
+            .cta-section {
+                padding: 1.5rem 0.8rem;
+                border-radius: 15px;
+            }
+
+            .cta-section h2 {
+                font-size: 1.3rem;
+                margin-bottom: 0.8rem;
+            }
+
+            .cta-section p {
+                font-size: 0.9rem;
+            }
+
+            .cta-button {
+                padding: 0.7rem 1.5rem;
+                font-size: 0.9rem;
+                border-radius: 40px;
+            }
+
+            /* Optimizar popups para móviles pequeños */
+            .leaflet-popup-content-wrapper {
+                border-radius: 12px;
+            }
+
+            .leaflet-popup-content {
+                margin: 6px 10px;
+                font-size: 0.8rem;
+                min-width: 180px !important;
+            }
+
+            .leaflet-popup-content h3 {
+                font-size: 1rem !important;
+                margin-bottom: 8px !important;
+            }
+
+            .leaflet-popup-content button {
+                padding: 6px 12px !important;
+                font-size: 0.8rem !important;
+                border-radius: 15px !important;
+            }
+        }
+
+        /* Orientación landscape en móviles */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .map-placeholder {
+                height: 300px;
+            }
+
+            .header {
+                margin-bottom: 1.5rem;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .features {
+                margin-top: 1.5rem;
+            }
+
+            .cta-section {
+                margin-top: 1.5rem;
+                padding: 1.5rem;
+            }
+        }
+
+        /* Mejoras para pantallas táctiles */
+        @media (hover: none) and (pointer: coarse) {
+            .control-button {
+                padding: 0.6rem;
+                min-height: 44px;
+                min-width: 44px;
+            }
+
+            .cta-button {
+                min-height: 48px;
+                padding: 0.8rem 2rem;
+            }
+
+            .back-button {
+                min-height: 44px;
+                padding: 0.6rem 1.2rem;
+            }
+
+            /* Hacer los popups más fáciles de tocar */
+            .leaflet-popup-content button {
+                min-height: 44px !important;
+                padding: 0.6rem 1rem !important;
+                margin-top: 0.8rem !important;
             }
         }
     </style>
@@ -273,11 +571,11 @@
                 <div class="map-loading" id="mapLoading">
                     <div class="loading-spinner"></div>
                     <p>Cargando mapa...</p>
-                    <p style="font-size: 1rem; margin-top: 1rem; opacity: 0.7;">
+                    <p class="loading-text">
                         Obteniendo tu ubicación actual
                     </p>
                 </div>
-                <div class="location-info" id="locationInfo" style="display: none;">
+                <div class="location-info" id="locationInfo">
                     📍 Tu ubicación actual
                 </div>
                 <div class="map-controls">
@@ -315,7 +613,7 @@
 
         <div class="cta-section">
             <h2>¿Listo para encontrar tu espacio?</h2>
-            <p style="margin: 1rem 0; opacity: 0.9;">
+            <p class="cta-description">
                 Únete a miles de usuarios que ya confían en NightCode
             </p>
             <a href="estacionamiento.html" class="cta-button">Comenzar Ahora</a>
